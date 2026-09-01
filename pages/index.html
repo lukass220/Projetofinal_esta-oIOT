@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Projeto IoT - Home</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/styles.css">
+
+</head>
+
+<body>
+
+
+    <header>
+
+        <h1>
+            📊 Estação de Monitoramento IoT
+        </h1>
+
+        <p>
+            ESP32 + Sensores + MQTT + Dashboard Web
+        </p>
+
+        <p>
+            <strong>
+                Grupo 5 - Turma 3°B
+            </strong>
+        </p>
+
+    </header>
+
+
+    <nav>
+
+        <a
+            href="dashboard.html"
+            class="menu-button">
+
+            Dashboard Ao Vivo
+
+        </a>
+
+    </nav>
+
+
+    <main>
+
+        <article>
+
+            <h2>
+                Sobre o Projeto
+            </h2>
+
+            <p>
+                Este projeto consiste em uma estação de
+                monitoramento IoT utilizando um ESP32,
+                sensores DHT11 e MQ-135.
+            </p>
+
+            <p>
+                O sistema realiza a coleta de dados
+                ambientais e envia essas informações
+                através do protocolo MQTT.
+            </p>
+
+            <p>
+                Os dados são recebidos pelo Dashboard Web
+                em tempo real através de WebSockets.
+            </p>
+
+        </article>
+
+
+        <article>
+
+            <h2>
+                Hardware Utilizado
+            </h2>
+
+
+            <section class="hardware">
+
+
+                <div class="info-card">
+
+                    <h3>
+                        ESP32
+                    </h3>
+
+                    <p>
+                        Microcontrolador responsável pela
+                        leitura dos sensores e conexão
+                        Wi-Fi.
+                    </p>
+
+                </div>
+
+
+                <div class="info-card">
+
+                    <h3>
+                        DHT11
+                    </h3>
+
+                    <p>
+                        Sensor utilizado para medir
+                        temperatura e umidade.
+                    </p>
+
+                </div>
+
+
+                <div class="info-card">
+
+                    <h3>
+                        MQ-135
+                    </h3>
+
+                    <p>
+                        Sensor utilizado para monitorar
+                        a qualidade do ar e gases.
+                    </p>
+
+                </div>
+
+
+                <div class="info-card">
+
+                    <h3>
+                        LEDs
+                    </h3>
+
+                    <p>
+                        LEDs utilizados para indicar
+                        situações de alerta.
+                    </p>
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        Resistor
+                    </h3>
+
+                    <p>
+                        Componente utilizado para limitar
+                        a corrente elétrica nos circuitos.
+                    </p>
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        Protoboard
+                    </h3>
+
+                    <p>
+                        Placa utilizada para realizar
+                        conexões temporárias entre os
+                        componentes eletrônicos.
+                    </p>
+
+                <div>
+
+
+            </section>
+
+        </article>
+
+
+        <article>
+
+            <h2>
+                Arquitetura do Projeto
+            </h2>
+
+            <p>
+                O ESP32 realiza a leitura dos sensores
+                DHT11 e MQ-135.
+            </p>
+
+            <p>
+                Depois, os dados são enviados através
+                da rede Wi-Fi para o broker Mosquitto
+                utilizando o protocolo MQTT.
+            </p>
+
+            <p>
+                O Dashboard Web recebe os dados através
+                de MQTT utilizando WebSockets.
+            </p>
+
+        </article>
+
+
+        <article>
+
+            <h2>
+                Imagens do Projeto
+            </h2>
+
+
+            <section class="imagens">
+
+
+                <img
+                    src="../assets/img/eps.webp"
+                    alt="ESP32 do projeto">
+
+
+                <img
+                    src="../assets/img/modulo-sensor-de-gas-inflamavel-mq-2.jpg"
+                    alt="Sensores do projeto">
+
+                    <img
+                    src="../assets/img/images (1).jpg"
+                    alt="Sensores do projeto">
+
+
+                <img
+                    src="../assets/img/montagem.webp"
+                    alt="Montagem do projeto">
+
+
+            </section>
+
+        </article>
+
+
+        <article>
+
+            <h2>
+                Senha do Grupo
+            </h2>
+
+            <p>
+                Digite a senha fornecida pelo professor.
+            </p>
+
+
+            <div class="senha">
+
+                <input
+                    type="password"
+                    id="senha"
+                    placeholder="Digite a senha">
+
+
+                <button
+                    onclick="salvarSenha()">
+
+                    Salvar
+
+                </button>
+
+            </div>
+
+
+            <p id="mensagem"></p>
+
+        </article>
+
+
+    </main>
+
+
+    <footer>
+
+        <h3>
+            Integrantes do Grupo
+        </h3>
+
+        <p>
+            Lucas Octavio Da Silva Castilho
+        </p>
+
+        <p>
+            Otávio Grapeia Gesualdo
+        </p>
+
+        <p>
+            Mateus Carvalho Lopes
+        </p>
+
+        <p>
+            Beatriz Almeida Conceição
+        </p>
+
+        <p>
+            Nicolas Fernando Dos Santos Januario
+        </p>
+
+    </footer>
+
+
+    <script
+        src="../assets/js/script.js">
+    </script>
+
+</body>
+
+</html>
