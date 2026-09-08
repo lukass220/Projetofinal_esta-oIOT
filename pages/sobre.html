@@ -1,11 +1,146 @@
-<nav>
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre o Projeto | Estação de Monitoramento IoT</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-        <a
-            href="index.html"
-            class="menu-button">
+    <header class="header-sobre">
+        <h1>Sobre o Projeto: Estação de Monitoramento IoT</h1>
+        <p>Disciplina: Internet das Coisas (IoT) | Professores: Odair e Tupinambá | SESI SENAI Vinhedo</p>
+    </header>
 
-            Home
+    <main>
 
-        </a>
+        <article id="sobre-o-projeto">
+            <section class="texto">
+                <h2>Sobre o Projeto</h2>
+                <p>
+                    O projeto consiste no desenvolvimento de uma solução IoT ponta a ponta capaz de coletar dados 
+                    ambientais do mundo físico em tempo real e exibi-los em um Dashboard Web interativo.
+                </p>
+                <p>
+                    A solução captura métricas cruciais de temperatura, umidade e qualidade do ar/gás através de microcontroladores 
+                    e sensores, transmitindo-as instantaneamente via protocolo MQTT/WebSockets para uma interface web 
+                    responsiva desenvolvida para monitoramento contínuo.
+                </p>
+            </section>
+            <section class="midia">
+            </section>
+        </article>
 
-    </nav>
+        <hr>
+
+        <article id="ferramentas">
+            <section class="texto">
+                <h2>Ferramentas Utilizadas pelo Grupo</h2>
+                <p>Para o desenvolvimento completo do hardware, servidor de mensageria e dashboard web, o grupo utilizou o seguinte ecossistema tecnológico:</p>
+                <ul>
+                    <li><strong>Hardware & Firmware:</strong> Microcontrolador ESP32 Dev Module, Sensor de Temperatura e Umidade DHT11 (GPIO 14), Sensor de Qualidade do Ar MQ-135 (GPIO Analógica) e LEDs de Alerta Físico acionados via GPIO digital. Programado em C/C++ na Arduino IDE.</li>
+                    <li><strong>Broker MQTT & Mensageria:</strong> Eclipse Mosquitto configurado localmente com suporte a WebSockets (Porta 9001) e porta padrão MQTT (Porta 1883), com registro de publicações em arquivo permanente (<code>mosquitto.log</code>).</li>
+                    <li><strong>Front-end Web:</strong> HTML5 semântico, CSS3 responsivo e JavaScript ES6 estruturado em arquitetura Single Page Application (SPA).</li>
+                    <li><strong>Bibliotecas & Protocolos Web:</strong> Biblioteca Paho MQTT via CDN para integração WebSockets e consumo dos dados no navegador, além de suporte ao <code>localStorage</code> para persistência da autenticação.</li>
+                    <li><strong>Versionamento & Gestão:</strong> Git, GitHub para hospedagem do código e VS Code como ambiente principal de desenvolvimento web.</li>
+                </ul>
+            </section>
+        </article>
+
+        <hr>
+
+        <article id="metodologia">
+            <section class="texto">
+                <h2>Metodologia de Trabalho</h2>
+                <p>
+                    Adotamos uma abordagem ágil e colaborativa dividida em módulos de engenharia: montagem física da bancada de hardware, 
+                    programação C++ do microcontrolador, parametrização do broker de mensageria Mosquitto e construção da camada de apresentação web.
+                </p>
+                <p>
+                    O grupo alinhou o envio regular das leituras a cada 3 segundos nos tópicos MQTT estabelecidos, garantindo baixíssima latência 
+                    entre os alertas acionados pelos LEDs físicos no circuito e a atualização dos cartões visuais no Dashboard Web.
+                </p>
+            </section>
+        </article>
+
+        <hr>
+
+        <article id="hardware-arquitetura">
+            <section class="texto">
+                <h2>Hardware e Arquitetura do Sistema</h2>
+                <p>
+                    A arquitetura é estruturada em três camadas integradas (Coleta, Processamento/Servidor e Apresentação):
+                </p>
+                <ul>
+                    <li><strong>Coleta & Alerta Físico (ESP32):</strong> Leitura periódica do DHT11 e MQ-135 a cada 3 segundos. Acionamento de LEDs de alerta imediato na placa caso a temperatura ultrapasse 28°C, a umidade passe de 56% ou a qualidade do ar exceda 400 PPM.</li>
+                    <li><strong>Transmissão & Broker (Mosquitto):</strong> Publicação dos dados nos tópicos <code>aulas/professortupi/temperatura</code>, <code>aulas/professortupi/umidade</code> e <code>aulas/professortupi/qualidade_ar</code> via porta 1883, retransmitidos via WebSockets na porta 9001.</li>
+                    <li><strong>Interface Web (Dashboard):</strong> A aplicação Web utiliza o Paho MQTT em JavaScript para se inscrever nos tópicos e atualizar em tempo real os indicadores gráficos para o usuário.</li>
+                </ul>
+            </section>
+            <section class="midia">
+                         <img src="../assets/img/montagem.webp" alt="arquitetura">
+            </section>
+        </article>
+
+        <hr>
+
+        <article id="processo-etapas">
+            <section class="texto">
+                <h2>Processo de Desenvolvimento (Etapas)</h2>
+                <p>O fluxo de trabalho foi executado sequencialmente através das seguintes etapas:</p>
+                <ol>
+                    <li><strong>Montagem do Circuito e Firmware:</strong> Conexão dos sensores DHT11, MQ-135 e LEDs às GPIOs do ESP32 e programação da lógica de alerta e envio Wi-Fi.</li>
+                    <li><strong>Configuração do Servidor Mosquitto:</strong> Edição do <code>mosquitto.conf</code> para liberação de portas (1883/9001), permissões anônimas e ativação dos logs (<code>log_type publish</code>).</li>
+                    <li><strong>Construção da Interface SPA Web:</strong> Desenvolvimento do layout responsivo com suporte a navegação por abas ("Sobre o Projeto" e "Dashboard Ao Vivo") e banner do grupo.</li>
+                    <li><strong>Integração WebSockets & LocalStorage:</strong> Conexão do Paho MQTT ao cliente web para recepção de payloads JSON e gravação da chave de acesso do professor.</li>
+                    <li><strong>Validação e Testes Finais:</strong> Testes de estresse com variação de parâmetros nos sensores para validação simultânea dos LEDs físicos e indicadores web.</li>
+                </ol>
+            </section>
+            <section class="midia">
+                                <img src="../assets//img/Mqtt.png" alt="Sobre o Projeto">
+        </article>
+
+        <hr>
+
+        <article id="equipe">
+            <section class="texto">
+                <h2>Nossa Equipe</h2>
+                <p>
+                    Projeto IOT SESI SENAI Vinhedo desenvolvido com empenho pelos integrantes:
+                </p>
+                <ul>
+                    <li><strong>Beatriz Almeida Conceição</strong></li>
+                    <li><strong>Lucas Octavio da Silva Castilho</strong></li>
+                    <li><strong>Mateus Carvalho Lopes</strong></li>
+                    <li><strong>Nicolas Fernando Dos Santos Januario</strong></li>
+                    <li><strong>Otávio Grapeia Gesualdo</strong></li>
+                     <section class="midia">
+               <img src="../assets/img/Grupo.webp" alt="Equipe">
+            </section>
+        </article>
+
+        <hr>
+
+        <article id="curiosidades">
+            <section class="texto">
+                <h2>Curiosidades do Projeto</h2>
+                <ul>
+                    <li><strong>Duplo Alerta em Tempo Real:</strong> Se a temperatura passar de 28°C, o LED físico no ESP32 acende no mesmo milissegundo em que o cartão na tela altera seu estado visual.</li>
+                    <li><strong>Rastreabilidade Completa:</strong> Com a diretiva <code>log_type publish</code> no Mosquitto, todas as mensagens enviadas pelos sensores ficam salvas no arquivo <code>mosquitto.log</code> no servidor local.</li>
+                    <li><strong>Autenticação Persistente:</strong> O sistema utiliza <code>localStorage</code> do navegador para guardar a chave de segurança fornecida pelo professor, evitando a necessidade de reautenticação a cada recarga de página.</li>
+                </ul>
+            </section>
+        </article>
+
+    </main>
+
+    <footer>
+        <p>Projeto IOT SESI SENAI Vinhedo | Desenvolvido por Beatriz, Lucas, Mateus, Nicolas e Otávio.</p>
+    </footer>
+
+</body>
+</html>
+
+```
