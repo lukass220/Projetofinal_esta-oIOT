@@ -12,7 +12,7 @@
 
     <link
         rel="stylesheet"
-        href="../assets/css/styles.css">
+        href="../css/styes.css">
 
 </head>
 
@@ -182,7 +182,7 @@
                         componentes eletrônicos.
                     </p>
 
-                <div>
+                </div>
 
 
             </section>
@@ -314,9 +314,19 @@
 
     </footer>
 
+    <script>
+        function salvarSenha() {
+            const senha = document.getElementById("senha").value.trim();
+            const mensagem = document.getElementById("mensagem");
 
-    <script
-        src="../assets/js/script.js">
+            if (!senha) {
+                mensagem.textContent = "Digite uma senha antes de salvar.";
+                return;
+            }
+
+            localStorage.setItem("senhaGrupo", senha);
+            mensagem.textContent = "Senha salva com sucesso.";
+        }
     </script>
 
 </body>
