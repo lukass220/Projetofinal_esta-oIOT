@@ -63,7 +63,7 @@ h1 {
 
 
 /* index.css */
-* {
+{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -85,7 +85,7 @@ header {
 }
 
 header h1 {
-    color: #007bff;
+    color: #a901d7;
     margin-bottom: 10px;
 }
 
@@ -100,7 +100,7 @@ nav {
 
 .menu-button {
     display: inline-block;
-    background-color: #007bff;
+    background-color: #ac07f3;
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
@@ -111,7 +111,7 @@ nav {
 }
 
 .menu-button:hover {
-    background-color: #0056b3;
+    background-color: #a701fa;
 }
 
 main {
@@ -132,7 +132,7 @@ article {
 article h2 {
     margin-bottom: 15px;
     color: #333;
-    border-bottom: 2px solid #007bff;
+    border-bottom: 2px solid #a600ff;
     padding-bottom: 5px;
 }
 
@@ -167,7 +167,7 @@ article p {
 }
 
 .hardware h3 {
-    color: #007bff;
+    color: #9500ff;
     margin-bottom: 10px;
 }
 
@@ -261,7 +261,7 @@ footer p {
 }
 
 .header-sobre h1 {
-    color: #007bff;
+    color: #a600ff;
     margin-bottom: 10px;
     font-size: 1.8em;
 }
@@ -281,46 +281,4 @@ article {
     display: flex;
     flex-direction: column;
     gap: 20px;
-}
-
-@media (min-width: 768px) {
-    article {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
-    
-    article .texto {
-        flex: 1;
-    }
-
-    article .midia {
-        max-width: 350px;
-        flex-shrink: 0;
-    }
-}
-
-article ul, article ol {
-    margin-top: 12px;
-    padding-left: 20px;
-}
-
-article li {
-    margin-bottom: 10px;
-    color: #555;
-    line-height: 1.5;
-}
-
-article li strong {
-    color: #333;
-}
-
-.midia img {
-    width: 100%;
-    max-height: 220px;
-    object-fit: cover;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    margin-top: 10px;
 }
