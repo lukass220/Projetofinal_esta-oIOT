@@ -1,5 +1,5 @@
 const CONFIG = {
-  host: "10.0.0.252",
+  host: "10.136.42.69",
   port: 9001,
   topics: {
     temperatura: "aulas/grupo5Lucas/temperatura",
@@ -13,10 +13,19 @@ const CONFIG = {
   },
 };
 
+const grupo = [
+  "Lucas Octavio Da Silva Castilho",
+  "Otávio Grapeia Gesualdo",
+  "Mateus Carvalho Lopes",
+  "Beatriz Almeida Conceição",
+  "Nicolas Fernando Dos Santos Januario",
+];
+
 let client = null;
 let reconexaoAgendada = false;
 
 document.addEventListener("DOMContentLoaded", () => {
+  localStorage.setItem("grupo", JSON.stringify(grupo));
   restaurarDados();
   criarInformacoesExtras();
 
