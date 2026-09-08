@@ -1,56 +1,205 @@
-const MQTT_HOST = "10.0.0.252";
-const MQTT_PORT = 9001;
+const CONFIG = {
+  host: "10.0.0.252",
+  port: 9001,
+  topics: {
+    temperatura: "aulas/grupo5Lucas/temperatura",
+    umidade: "aulas/grupo5Lucas/umidade",
+    qualidadeAr: "aulas/grupo5Lucas/qualidade_ar",
+  },
+  storage: {
+    temperatura: "iot_temperatura",
+    umidade: "iot_umidade",
+    qualidadeAr: "iot_qualidade_ar",
+  },
+};
 
-const TOPIC_TEMP = "aulas/grupo5Lucas/temperatura";
-const TOPIC_HUM = "aulas/grupo5Lucas/umidade";
-const TOPIC_AIR = "aulas/grupo5Lucas/qualidade_ar";
+let client = null;
+let reconexaoAgendada = false;
 
-const clientID = "WebDash_" + Math.random().toString(16).substr(2, 8);
-const client = new Paho.MQTT.Client(MQTT_HOST, Number(MQTT_PORT), clientID);
+document.addEventListener("DOMContentLoaded", () => {
+  restaurarDados();
+  criarInformacoesExtras();
 
-client.onConnectionLost = onConnectionLost;
-client.onMessageArrived = onMessageArrived;
+  if (typeof Paho === "undefined") {
+    atualizarStatus("MQTT indisponível: verifique a internet", false);
+    return;
+  }
 
-client.connect({
-  onSuccess: onConnect,
-  onFailure: onFailure,
+  conectarMQTT();
 });
 
-function onConnect() {
+function atualizarStatus(texto, conectado) {
   const statusDiv = document.getElementById("status");
-  statusDiv.innerText = "Status: Conectado ao Mosquitto";
-  statusDiv.className = "status connected";
 
-  client.subscribe(TOPIC_TEMP);
-  client.subscribe(TOPIC_HUM);
-  client.subscribe(TOPIC_AIR);
+  if (!statusDiv) {
+    return;
+  }
+
+  statusDiv.textContent = texto;
+  statusDiv.className = conectado
+    ? "status connected"
+    : "status disconnected";
 }
 
-function onFailure(responseObject) {
-  const statusDiv = document.getElementById("status");
-  statusDiv.innerText =
-    "Status: Falha na conexão (" + responseObject.errorMessage + ")";
-  statusDiv.className = "status disconnected";
-}
+function conectarMQTT() {
+  if (typeof Paho === "undefined") {
+    atualizarStatus("Biblioteca MQTT não carregada", false);
+    return;
+  }
 
-function onConnectionLost(responseObject) {
-  if (responseObject.errorCode !== 0) {
-    const statusDiv = document.getElementById("status");
-    statusDiv.innerText = "Status: Conexão Perdida";
-    statusDiv.className = "status disconnected";
+  const clientID = "WebDash_" + Math.random().toString(16).slice(2, 10);
+
+  try {
+    client = new Paho.MQTT.Client(CONFIG.host, CONFIG.port, clientID);
+    client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
+
+    atualizarStatus("Status: Conectando...", false);
+    client.connect({
+      timeout: 5,
+      onSuccess: onConnect,
+      onFailure: onFailure,
+    });
+  } catch (error) {
+    console.error("Erro ao iniciar MQTT:", error);
+    atualizarStatus("Status: Erro ao iniciar MQTT", false);
+    agendarReconexao();
   }
 }
 
-function onMessageArrived(message) {
-  const topic = message.destinationName;
-  const payload = message.payloadString;
+function onConnect() {
+  atualizarStatus("Status: Conectado ao Mosquitto", true);
 
-  if (topic === TOPIC_TEMP) {
-    document.getElementById("temp").innerText = payload;
-  } else if (topic === TOPIC_HUM) {
-    document.getElementById("hum").innerText = payload;
-  } else if (topic === TOPIC_AIR) {
-    document.getElementById("air").innerText = payload;
+  Object.values(CONFIG.topics).forEach((topic) => client.subscribe(topic));
+  atualizarUltimaAtualizacao("Conexão estabelecida");
+  reconexaoAgendada = false;
+}
+
+function onFailure(responseObject) {
+  const mensagem = responseObject?.errorMessage || "broker indisponível";
+
+  atualizarStatus("Status: Falha na conexão (" + mensagem + ")", false);
+  agendarReconexao();
+}
+
+function onConnectionLost(responseObject) {
+  if (responseObject?.errorCode === 0) {
+    return;
+  }
+
+  atualizarStatus("Status: Conexão perdida. Tentando novamente...", false);
+  agendarReconexao();
+}
+
+function agendarReconexao() {
+  if (reconexaoAgendada) {
+    return;
+  }
+
+  reconexaoAgendada = true;
+  window.setTimeout(() => {
+    reconexaoAgendada = false;
+    conectarMQTT();
+  }, 5000);
+}
+
+function onMessageArrived(message) {
+  const valor = Number.parseFloat(message.payloadString);
+  const configuracao = obterConfiguracaoDoTopico(message.destinationName);
+
+  if (!configuracao || Number.isNaN(valor)) {
+    console.warn("Leitura MQTT inválida:", message.payloadString);
+    return;
+  }
+
+  const elemento = document.getElementById(configuracao.id);
+
+  if (elemento) {
+    elemento.textContent = valor.toFixed(configuracao.decimais);
+  }
+
+  localStorage.setItem(configuracao.storage, String(valor));
+  atualizarAlerta(configuracao, valor);
+  atualizarUltimaAtualizacao();
+}
+
+function obterConfiguracaoDoTopico(topic) {
+  const configuracoes = [
+    {
+      topic: CONFIG.topics.temperatura,
+      id: "temp",
+      storage: CONFIG.storage.temperatura,
+      decimais: 1,
+      limite: 28,
+      alerta: "Temperatura acima de 28 °C",
+    },
+    {
+      topic: CONFIG.topics.umidade,
+      id: "hum",
+      storage: CONFIG.storage.umidade,
+      decimais: 1,
+      limite: 56,
+      alerta: "Umidade acima de 56%",
+    },
+    {
+      topic: CONFIG.topics.qualidadeAr,
+      id: "air",
+      storage: CONFIG.storage.qualidadeAr,
+      decimais: 0,
+      limite: 400,
+      alerta: "Qualidade do ar em nível de alerta",
+    },
+  ];
+
+  return configuracoes.find((configuracao) => configuracao.topic === topic);
+}
+
+function atualizarAlerta(configuracao, valor) {
+  const elemento = document.getElementById(configuracao.id);
+  const card = elemento?.closest(".card");
+
+  if (!card) {
+    return;
+  }
+
+  card.classList.toggle("alerta", valor > configuracao.limite);
+  card.title = valor > configuracao.limite ? configuracao.alerta : "Leitura normal";
+}
+
+function restaurarDados() {
+  const configuracoes = Object.values(CONFIG.storage);
+  const ids = ["temp", "hum", "air"];
+  const decimais = [1, 1, 0];
+
+  configuracoes.forEach((chave, indice) => {
+    const valorSalvo = localStorage.getItem(chave);
+    const elemento = document.getElementById(ids[indice]);
+    const numero = Number.parseFloat(valorSalvo);
+
+    if (elemento && !Number.isNaN(numero)) {
+      elemento.textContent = numero.toFixed(decimais[indice]);
+    }
+  });
+}
+
+function criarInformacoesExtras() {
+  const statusDiv = document.getElementById("status");
+
+  if (!statusDiv || document.getElementById("ultimaAtualizacao")) {
+    return;
+  }
+
+  const atualizacao = document.createElement("small");
+  atualizacao.id = "ultimaAtualizacao";
+  atualizacao.textContent = "Aguardando leituras...";
+  statusDiv.insertAdjacentElement("afterend", atualizacao);
+}
+
+function atualizarUltimaAtualizacao(mensagem = "Leitura recebida") {
+  const elemento = document.getElementById("ultimaAtualizacao");
+
+  if (elemento) {
+    elemento.textContent = `${mensagem} às ${new Date().toLocaleTimeString("pt-BR")}`;
   }
 }
 
